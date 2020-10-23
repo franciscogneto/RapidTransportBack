@@ -1,0 +1,7 @@
+git add -> caso queira colocar tudo -> git add .
+git commit -m "menssagem"
+git push
+
+
+pra trazer do gitHub
+git pull
