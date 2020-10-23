@@ -5,3 +5,9 @@ git push
 
 pra trazer do gitHub
 git pull
+
+mostrando a branch atual:
+git branch
+
+mudando de branch:
+git checkout 'master'
