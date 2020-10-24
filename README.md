@@ -4,6 +4,15 @@
 ```
 git clone https://github.com/franciscogneto/RapidTransportBack.git
 ```
+#### Criando ambiente virtual:
+##### -> dentro da pasta gerada a partir do prompt insira o seguinte comando:
+```
+pyhton -m venv nome_que_desejar
+```
+##### -> ativando a venv:
+```
+\nome\Scripts\activate
+```
 
 #### instalando os pacotes para ser possível a execução:
 ##### -> acesse o diretório gerado pelo git clone através do prompt
@@ -29,5 +38,10 @@ python manage.py runserver
 
 #### acesse o seguinte link para abrir o projeto: 
 
-
 [localhost](http:127.0.0.1:8000)
+## Aperte CLTR+C no prompt caso queira incessar o servidor
+
+##### -> desativando a venv:
+```
+\nome\Scripts\deactivate
+```
