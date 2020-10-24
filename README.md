@@ -39,7 +39,7 @@ python manage.py runserver
 #### acesse o seguinte link para abrir o projeto: 
 
 [localhost](http:127.0.0.1:8000)
-## Aperte CLTR+C no prompt caso queira incessar o servidor
+##### Aperte CLTR+C no prompt caso queira incessar o servidor
 
 ##### -> desativando a venv:
 ```
