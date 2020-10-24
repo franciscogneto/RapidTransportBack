@@ -11,7 +11,7 @@ pyhton -m venv nome_que_desejar
 ```
 ##### -> ativando a venv:
 ```
-\nome\Scripts\activate
+nome\Scripts\activate
 ```
 
 #### instalando os pacotes para ser possível a execução:
