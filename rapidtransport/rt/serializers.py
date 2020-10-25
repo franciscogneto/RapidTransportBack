@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Empresa,Veiculo
+from .models import Empresa,Veiculo,Funcionario
 
 
 
@@ -33,4 +33,18 @@ class VeiculoSerializer(serializers.ModelSerializer):
             'kilometragem_inicial',
             'kilometragem_revisao',
             'empresa'
+        )
+
+
+class FuncionarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Funcionario
+        fields = (
+            'id',
+            'empresa',
+            'nome',
+            'data_admissao',
+            'data_aniversario',
+            'tipo_carteira',
+            'celular'
         )
