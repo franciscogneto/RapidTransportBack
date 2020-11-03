@@ -1,0 +1,52 @@
+Fuso horário:
+-> condifuração do fuso horário - ok - SP
+
+Idioma - pr-br:
+-> confifuração do idioma padrão - ok
+
+Banco de dados - PostGres:
+-> configuração no back - ok
+-> local - ok
+
+Modelos:
+->Empresa - ok
+->Veiculo - ok
+->Funcionario - ok
+
+Serializers:
+->Empresa - ok
+->Usuário - ok
+->Veiculo - ok
+->funcionario - ok
+
+Desacoplamento - ok
+-> /api/...
+
+Corsheaders:
+-> configuração dos métodos que podem ser realizados - ok
+-> configuração de onde pode ser acessado os dados - ok
+
+GIT:
+->inserido no git - ok
+->atualizado no git - ok
+
+Segurança - JWT:
+->configuração inicial do jwt - ok 
+->configuração profunda do jwt -  x
+->pegar token e refresh - ok api/token/
+->refresh - ok api/token/refresh/
+
+Modelos - Usuário:
+-> criação de um usuário para logar no sistema - ok
+-> múltiplos papeis - ok funcionário/empresa
+
+Veículo: OK
+->pegar todos veículos - ok GET api/veiculos/
+->adicionar um veículo - ok POST api/veiculos/
+->alterar um veículo - ok PUT api/veiculos/{id}
+->deletar um veículo - ok DELETE api/veiculos/{id}
+
+LOGIN!!!!!!
+
+
+
