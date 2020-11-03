@@ -1,9 +1,11 @@
 from rest_framework import serializers
-from .models import Empresa,Veiculo,Funcionario
+from .models import Empresa,Veiculo,Funcionario,Usuario
 
 
 
 class EmpresaSerializer(serializers.ModelSerializer):
+
+
 
     class Meta:
         """extra_kargs = { #alguns dados são comercializados, sendo assim é bom protege-los
@@ -13,16 +15,21 @@ class EmpresaSerializer(serializers.ModelSerializer):
         }"""
         model = Empresa #model que estou utilziando
         fields = ( #seus campos
-            'id',
             'nome',
             'cnpj',
             'endereco',
             'telefone'
         )
+        #fields = '__all__'
 
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = '__all__'
+        
 
 class VeiculoSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Veiculo
         fields = (
@@ -34,13 +41,14 @@ class VeiculoSerializer(serializers.ModelSerializer):
             'kilometragem_revisao',
             'empresa'
         )
+    
 
 
 class FuncionarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Funcionario
         fields = (
-            'id',
+            'usuario',
             'empresa',
             'nome',
             'data_admissao',
