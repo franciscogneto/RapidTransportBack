@@ -38,10 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
-    'rest_framework',
     'rt.apps.RtConfig',
+    ###
+    'rest_framework',
+    'rest_framework.authtoken',
+    ##
     'corsheaders',
 ]
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -135,13 +140,13 @@ REST_FRAMEWORK = {
     # para configurar o django rest framework,
 
     #Caso esteja autenticado pode modificar a base de dados
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
+    'DEFAULT_AUTHENTICATION_CLASSES': (#Se eu setar permissão isAuthenticated em uma view, ele saberá que é uma autenticação token, e q precisa procurar um token no head da requisição 
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    )
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 #configuração CORS
@@ -156,3 +161,5 @@ CORS_ALLOW_METHODS = [
     'PUT',
     'PATCH'
 ]
+
+AUTH_USER_MODEL = 'rt.Usuario'

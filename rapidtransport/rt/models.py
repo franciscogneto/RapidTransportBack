@@ -1,12 +1,15 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 #Herda a classe model do django
 
+class Usuario(AbstractUser):
+    is_funcionario = models.BooleanField(default=False)
+    is_empresa = models.BooleanField(default=False)
 
-
+    
 class Empresa(models.Model):
-    id = models.AutoField(primary_key=True)
+    usuario = models.OneToOneField(Usuario,on_delete=models.CASCADE,primary_key=True)
     nome = models.CharField(max_length=100)
     cnpj = models.CharField(max_length=20)
     endereco = models.CharField(max_length=100)
@@ -24,7 +27,7 @@ class Veiculo(models.Model):
     id = models.AutoField(primary_key=True)
     modelo = models.CharField(max_length=50)
     color = models.CharField(max_length=25)
-    placa = models.CharField(max_length=10)
+    placa = models.CharField(max_length=10,unique=True)
     kilometragem_inicial = models.PositiveIntegerField()
     kilometragem_revisao = models.PositiveSmallIntegerField()
     empresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
@@ -44,7 +47,7 @@ class Funcionario(models.Model):
         ('D', 'ONIBUS'),
         ('E', 'CARRETA'),
     )
-    id = models.AutoField(primary_key=True)
+    usuario = models.OneToOneField(Usuario,on_delete=models.CASCADE,primary_key=True)
     empresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
     nome = models.CharField(max_length=100)
     data_admissao = models.DateField()
