@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -149,10 +149,14 @@ REST_FRAMEWORK = {
     ),
 }
 
+
+
 #configuração CORS
-CORS_ALLOWED_ORIGINS = [#origens autorizadas a fazer requisições
+"""CORS_ALLOWED_ORIGINS = [#origens autorizadas a fazer requisições
     "http://localhost:3000",
-]
+]"""
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 #requisições permetidas
 CORS_ALLOW_METHODS = [
@@ -161,5 +165,10 @@ CORS_ALLOW_METHODS = [
     'PUT',
     'PATCH'
 ]
+
+#configurando jwt
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=25),
+}
 
 AUTH_USER_MODEL = 'rt.Usuario'
