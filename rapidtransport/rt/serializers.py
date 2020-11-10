@@ -54,5 +54,7 @@ class FuncionarioSerializer(serializers.ModelSerializer):
             'data_admissao',
             'data_aniversario',
             'tipo_carteira',
-            'celular'
+            'celular',
+            'cpf',
+            'status'
         )
