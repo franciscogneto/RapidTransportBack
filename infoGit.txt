@@ -11,3 +11,9 @@ git branch
 
 mudando de branch:
 git checkout 'master'
+
+vendo o que foi alterado:
+git diff <cmainho/arquivo>
+
+tirando arquivo da staging area
+git reset HEAD caminho/arquivo

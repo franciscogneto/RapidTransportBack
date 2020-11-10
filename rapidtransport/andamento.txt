@@ -46,7 +46,12 @@ Veículo: OK
 ->alterar um veículo - ok PUT api/veiculos/{id}
 ->deletar um veículo - ok DELETE api/veiculos/{id}
 
-LOGIN!!!!!!
+Funcionário:
+->pegar todos funcionários - ok GET api/funcionarios/
+->adicionar um funcionário - ok POST api/funcionarios/
+->alterar um funcionário - ok PUT api/funcionarios/{id}
+->deletar um funcionário - ok DELETE api/funcionarios/{id}
+
 
 
 
