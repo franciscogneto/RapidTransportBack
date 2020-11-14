@@ -53,11 +53,13 @@ Funcionário:
 ->deletar um funcionário - ok DELETE api/funcionarios/{id}
 
 relatório:
-->criar relatório -> criar item - ok POST api/relatorio/
-->apagar relatório - 
+->pegar relatórios -> GET api/relatorios/
+->criar relatório -> criar item - ok POST api/relatorios/
+->pegar relatório específico -> ok GET api/relatorios/{id}/
+->apagar relatório - DELETE api/relatorios/{id}/
 
 item:
--> apagar item -
+-> apagar item -> ok -> DELETE api/item/{id}/ -- por enquanto é esse caminho
 
 
 teste -> empresa
