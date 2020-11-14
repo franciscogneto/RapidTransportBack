@@ -36,7 +36,7 @@ class Veiculo(models.Model):
     color = models.CharField(max_length=25)
     placa = models.CharField(max_length=10,unique=True)
     kilometragem_inicial = models.PositiveIntegerField()
-    kilometragem_revisao = models.PositiveSmallIntegerField()
+    kilometragem_revisao = models.PositiveIntegerField()
     empresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(choices=STATUS,default=1)
     
@@ -76,18 +76,50 @@ class Funcionario(models.Model):
     class Meta:
         db_table = "funcionarios"
 
+class Relatorio(models.Model):
+    id = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.nome
 
-class Item(models.Model):
+    class Meta:
+        db_table = "relatorio"
+class Item(models.Model):   
     TIPO_GRAU = (
         (1,'LEVE'),
         (2,'MODERADO'),
         (3,'URGENTE'),
     )
     id = models.AutoField(primary_key=True)
-    #id_relatório
-    grau_emergencia = models.PositiveSmallIntegerField(choices=TIPO_GRAU)
-    descricao = models.CharField(max_length=250)
-    ok = models.BooleanField()
+    relatorio = models.ForeignKey(Relatorio,on_delete=models.CASCADE)
+    grau_emergencia = models.PositiveSmallIntegerField(choices=TIPO_GRAU,default=1)
+    descricao = models.CharField(max_length=200)
+    check = models.BooleanField(default=False)
 
+    def __str__(self):
+        return "item"
     class Meta:
         db_table = "item"
+
+class Viagem(models.Model):
+    id = models.AutoField(primary_key=True)
+    origem = models.CharField(max_length=200)
+    destino = models.CharField(max_length=200)
+    carga = models.CharField(max_length=100)
+    viagem_finalizada = models.BooleanField(default=False)
+    data_inicio = models.DateField()
+    periodizacao_relatorio = models.SmallIntegerField()
+    empresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
+    funcionario = models.ForeignKey(Funcionario,on_delete=models.CASCADE)
+    veiculo = models.ForeignKey(Veiculo,on_delete=models.CASCADE)
+    
+
+    class Meta:
+        db_table = "viagem"
+class Relatorios_Viagem(models.Model):
+    id = models.AutoField(primary_key=True)
+    relatorio = models.ForeignKey(Relatorio,on_delete=models.CASCADE)
+    viagem = models.ForeignKey(Viagem,on_delete=models.CASCADE)
+    data_preenchimento = models.DateField(null=True)
+    observacao = models.CharField(max_length=300,blank=True,null=True)
