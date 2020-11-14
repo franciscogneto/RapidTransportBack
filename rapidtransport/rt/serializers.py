@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Empresa,Veiculo,Funcionario,Usuario
+from .models import Empresa,Veiculo,Funcionario,Usuario,Viagem,Relatorio,Item
 
 
 
@@ -58,3 +58,15 @@ class FuncionarioSerializer(serializers.ModelSerializer):
             'cpf',
             'status'
         )
+
+class RelatorioSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Relatorio
+        fields = '__all__'
+
+class ItemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Item
+        fields = '__all__'
