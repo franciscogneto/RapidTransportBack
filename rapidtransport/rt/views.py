@@ -3,12 +3,12 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Empresa,Veiculo,Funcionario,Usuario
-from .serializers import EmpresaSerializer,VeiculoSerializer,FuncionarioSerializer,UsuarioSerializer
+from .models import Empresa,Veiculo,Funcionario,Usuario,Relatorio,Item
+from .serializers import EmpresaSerializer,VeiculoSerializer,FuncionarioSerializer,UsuarioSerializer,RelatorioSerializer,ItemSerializer
 from django.core import serializers
 from django.contrib.auth.hashers import make_password,check_password
 from .permissions.permissions import IsEmpresaUser,IsFuncionarioUser
-from .regularizadores.auxiliar import GeraSenhaUsuario,RegularizadorVeiculo,RegularizaFuncionario
+from .regularizadores.auxiliar import GeraSenhaUsuario,RegularizadorVeiculo,RegularizaFuncionario,RegularizaRelatorio_Itens
 from django.shortcuts import redirect
 from rest_framework_simplejwt.tokens import RefreshToken 
 # Create your views here.
@@ -62,8 +62,7 @@ class EmpresaAPIView(APIView):
 
     def put(self,request):
         serializer = EmpresaSerializer(data=request.data)      
-        if(serializer.is_valid()):
-            
+        if(serializer.is_valid()):    
             try:
                 usuarioAux = Usuario.objects.get(username=serializer.data['cnpj']) 
             except Usuario.DoesNotExist:
@@ -192,6 +191,7 @@ class FuncionarioListaAPIView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST,data="cpf já existente")
 
 class FuncionarioDetalheAPIView(APIView):
+
     permission_classes = (AllowAny,)
     def get(self,request,id):
         if(Funcionario.objects.filter(usuario=id)):
@@ -227,3 +227,94 @@ class FuncionarioDetalheAPIView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT , data=mensagem)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND, data="funcionário não encontrado")
+
+
+class RelatorioListaAPIView(APIView):
+    permission_classes = (AllowAny,)
+    
+    def get(self,request):
+        serializer = RelatorioSerializer(Relatorio.objects.all(),many=True)
+        return Response(data=serializer.data)
+    
+    def post(self,request):
+        relatorio = request.data['relatorio']  
+        print(relatorio)      
+        itens = request.data['itens']
+        print(itens)
+        aux_existe = False
+        if(RegularizaRelatorio_Itens().regulariza_relatorio(relatorio,itens)):
+            relatorio_salvo = Relatorio.objects.create(nome=relatorio['nome'])
+            #print(relatorio_salvo)
+            for item in itens:
+                Item.objects.create(descricao=item['descricao'],relatorio=relatorio_salvo)
+                aux = str(item['descricao'])
+                aux = aux.upper()
+                if(aux == 'ODOMETRO' or aux == 'ODÓMETRO' or aux == 'ODÔMETRO'):
+                    aux_existe = True
+            if(not(aux_existe)):
+                Item.objects.create(descricao='Odómetro',relatorio=relatorio_salvo)
+            return Response(status=status.HTTP_200_OK,data='Salvo com sucesso')
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST,data='Não foi possível salvar, verifique os dados')
+
+
+class RelatorioDetalheAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self,request,id):
+        relatorio = Relatorio.objects.filter(id=id)
+        if(relatorio.exists()):
+            serializer_itens = ItemSerializer(Item.objects.filter(relatorio=relatorio[0]),many=True)
+            serializer = RelatorioSerializer(relatorio[0])
+            resposta = {
+                'relatorio': serializer.data,
+                'itens': serializer_itens.data
+            }
+            return Response(status=status.HTTP_200_OK,data=resposta)
+        return Response(status=status.HTTP_400_BAD_REQUEST,data='relatório inexistente')
+
+    def delete(self,request,id):
+        #conferir se tem alguma viagem com este relatório
+        relatorio = Relatorio.objects.filter(id=id)
+        if(relatorio.exists()):
+            for item in Item.objects.filter(relatorio=relatorio[0]):
+                item.delete()
+            nome_relatorio = relatorio[0].nome
+            relatorio[0].delete()
+            mensagem = 'relatório: '+nome_relatorio.upper()+' excluído com sucesso'
+            return Response(status=status.HTTP_204_NO_CONTENT, data=mensagem)
+        return Response(status=status.HTTP_400_BAD_REQUEST,data='relatório inexistente')
+
+
+class ItemAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self,request):
+        serializer = ItemSerializer(Item.objects.all(),many=True)
+        return Response(data=serializer.data)
+
+    """def delete(self,request,id_item):
+        #conferir se tem alguma viagem com o relatório deste item
+        if(Item.objects.filter(id=id_item).exists()):
+            Item.objects.get(id=id_item).delete()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST,data='Item inexistente')"""
+
+
+class testeItemApiView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self,request,id_item):
+        item = Item.objects.filter(id=id_item)
+        if(item.exists()):
+            serializer = ItemSerializer(item[0])
+            return Response(data=serializer.data)
+        return Response(data='item inexistente')
+
+    def delete(self,request,id_item):
+        #conferir se tem alguma viagem com o relatório deste item
+        item = Item.objects.filter(id=id_item) 
+        if(item.exists()):
+            item[0].delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
