@@ -12,17 +12,32 @@ class RegularizadorVeiculo():
         i = 0
         if(modelo.__len__() > 0):
             if(cor.__len__() > 2):
-                if(placa[3] == '-'):
+                if(placa.__len__() > 6 and placa[3] == '-' or placa[3] >= '0' and placa[3] <= '9'):#se formato da placa for comum or mercosul
                     while(i < placa.__len__()):
-                        if(i < 3):
-                            if( not(placa[i] >= 'A' and placa[i] <= 'Z')):
-                                return False
-                        if(i > 3):
-                            if(not(placa[i] >= '0' and placa[i] <= '9')):
-                                return False
+                        if(placa[3] == '-'):
+                            if(i < 3):
+                                if( not(placa[i] >= 'A' and placa[i] <= 'Z')):
+                                    return False
+                            if(i > 3):
+                                if(not(placa[i] >= '0' and placa[i] <= '9')):
+                                    return False
+                        else:
+                            if(placa[4] >= 'A' and placa[4] <= 'Z'):    
+                                if(i < 3):
+                                    if( not(placa[i] >= 'A' and placa[i] <= 'Z')):
+                                        return False
+                                if(i > 4):
+                                    if(not(placa[i] >= '0' and placa[i] <= '9')):
+                                        return False
+                            else:
+                                return False    
                         i+=1
                 else:
                     return False
+            else:
+                    return False
+        else:
+            return False
         return True
 
 
@@ -37,7 +52,7 @@ class RegularizaFuncionario():
         if(cpf.__len__() > 8):
             if(nome.__len__() > 5):
                 if(aux_celular.__len__() > 8):
-                    if(idade > 24 and admissao < idade):
+                    if(idade > 17 and admissao < idade):
                         if(15 <= (idade - admissao)):
                             return True                    
         
@@ -86,3 +101,21 @@ class GeraSenhaUsuario():
     def gera_letra(self):
         return chr(randint(a=97,b=122))
             
+class RegularizaRelatorio_Itens():
+
+    def regulariza_relatorio(self,relatorio,itens):
+        nome = str(relatorio['nome'])
+        nome = nome.replace(' ','')
+        print(nome)
+
+        
+        #relatorio
+        if(nome.__len__() == 0):
+            return False
+        
+        for item in itens:
+            descricao = str(item['descricao'])
+            descricao = descricao.replace(' ','')
+            if(descricao.__len__() < 3):
+                return False
+        return True
