@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Empresa,Veiculo,Funcionario,Usuario
+from .models import Empresa,Veiculo,Funcionario,Usuario,Viagem,Relatorio,Item
 # Register your models here.
 
 #igual ao admin.site.register(Nome)
@@ -18,4 +18,16 @@ class FuncionarioAdmin(admin.ModelAdmin):
 
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Relatorio)
+class RelatoriosAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Viagem)
+class ViagemAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Item)
+class ItemAdmin(admin.ModelAdmin):
     pass
