@@ -7,12 +7,13 @@ from .views import LoginView
 
 urlpatterns = [
     path('login/',LoginView.as_view(), name='login'),
+    #### motorista
+
+    #### empresa
     path('veiculos/',VeiculoListaAPIView.as_view(), name = 'veiculos'),
     path('veiculos/<int:id>/',VeiculoDetalheApiView.as_view(),name = 'veiculo'),
     path('funcionarios/',FuncionarioListaAPIView.as_view(), name = 'funcionarios'),
     path('funcionarios/<int:id>/',FuncionarioDetalheAPIView.as_view()),
-    path('empresa/',EmpresaAPIView.as_view(), name = 'empresa'),
-    path('usuarios/',UsuarioAPIView.as_view(), name = 'usuarios'),
     path('relatorios/',RelatorioListaAPIView.as_view(), name = 'relatorio'),
     path('relatorios/<int:id>/',RelatorioDetalheAPIView.as_view(), name = 'exclui_relatorio'),
     path('itens/',ItemAPIView.as_view(),name = 'itens'),
@@ -21,5 +22,7 @@ urlpatterns = [
     path('revisao/<int:id_revisao>/',RevisaoDetalheAPIView.as_view(),name = 'revisao'),
     path('viagens/',ViagemListaAPIView.as_view(), name = 'viagens'),
     path('viagens/<int:id>/', ViagemDetalheAPIView.as_view(), name = 'viagem'),
+    #### Admin
+    path('empresa/',EmpresaAPIView.as_view(), name = 'empresa'),
+    path('usuarios/',UsuarioAPIView.as_view(), name = 'usuarios'),
 ]
-
