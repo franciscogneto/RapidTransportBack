@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Empresa,Veiculo,Funcionario,Usuario,Viagem,Relatorio,Item
+from .models import Empresa,Veiculo,Funcionario,Usuario,Viagem,Relatorio,Item,Revisao,Viagem,Relatorios_Viagem
 
 
 
@@ -32,15 +32,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class VeiculoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Veiculo
-        fields = (
-            'id',
-            'modelo',
-            'color',
-            'placa',
-            'kilometragem_inicial',
-            'kilometragem_revisao',
-            'empresa'
-        )
+        fields = '__all__'
     
 
 
@@ -69,4 +61,23 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
+        fields = '__all__'
+
+
+class RevisaoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Revisao
+        fields = '__all__'
+
+class ViagemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Viagem
+        fields = '__all__'
+
+class Relatorio_ViagemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        models = Relatorios_Viagem
         fields = '__all__'
