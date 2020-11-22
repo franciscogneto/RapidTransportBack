@@ -3,16 +3,17 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Empresa,Veiculo,Funcionario,Usuario,Relatorio,Item
-from .serializers import EmpresaSerializer,VeiculoSerializer,FuncionarioSerializer,UsuarioSerializer,RelatorioSerializer,ItemSerializer
+from .models import Empresa,Veiculo,Funcionario,Usuario,Relatorio,Item,Revisao,Viagem,Relatorios_Viagem
+from .serializers import EmpresaSerializer,VeiculoSerializer,FuncionarioSerializer,UsuarioSerializer
+from .serializers import RelatorioSerializer,ItemSerializer,RevisaoSerializer,ViagemSerializer,Relatorio_ViagemSerializer
 from django.core import serializers
 from django.contrib.auth.hashers import make_password,check_password
-from .permissions.permissions import IsEmpresaUser,IsFuncionarioUser
-from .regularizadores.auxiliar import GeraSenhaUsuario,RegularizadorVeiculo,RegularizaFuncionario,RegularizaRelatorio_Itens
+from .permissions.permissions import IsEmpresaUser,IsFuncionarioUser,IsSuperUser
+from .regularizadores.auxiliar import GeraSenhaUsuario,RegularizadorVeiculo
+from .regularizadores.auxiliar import RegularizaFuncionario,RegularizaRelatorio_Itens,RegularizaViagem
 from django.shortcuts import redirect
 from rest_framework_simplejwt.tokens import RefreshToken 
-# Create your views here.
-
+from datetime import datetime
 
 class LoginView(APIView):
     permission_classes = (AllowAny,)
@@ -20,29 +21,32 @@ class LoginView(APIView):
     def post(self,request):
         username = request.data['username']
         password = request.data['password']
-        usuario = Usuario.objects.get(username=username)
-        if(usuario.check_password(password)):
-            jwt = LoginView.token_para_usuario(LoginView,usuario)
-            if(usuario.is_empresa):
-                resposta = {
-                    'refresh': str(jwt['refresh']),
-                    'access': str(jwt['access']),
-                    'isFuncionario': 0,
-                    'isEmpresa':1,
-                }
-                return Response(status=status.HTTP_200_OK,data=resposta)
-            elif(usuario.is_funcionario):
-                resposta = {
-                    'refresh': str(jwt['refresh']),
-                    'access': str(jwt['token']),
-                    'isFuncionario': 1,
-                    'isEmpresa':0,
-                }
-                return Response(status=status.HTTP_200_OK,data=resposta)
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST,data="Erro no Login, refaça a operação")#formatação incorreta
+        
+        if(Usuario.objects.filter(username=username).exists()):
+            usuario = Usuario.objects.get(username=username)
+            if(usuario.check_password(password)):
+                jwt = LoginView.token_para_usuario(LoginView,usuario)
+                if(usuario.is_empresa):
+                    resposta = {
+                        'refresh': str(jwt['refresh']),
+                        'access': str(jwt['access']),
+                        'isFuncionario': 0,
+                        'isEmpresa':1,
+                    }
+                    return Response(status=status.HTTP_200_OK,data=resposta)
+                elif(usuario.is_funcionario):
+                    resposta = {
+                        'refresh': str(jwt['refresh']),
+                        'access': str(jwt['token']),
+                        'isFuncionario': 1,
+                        'isEmpresa':0,
+                    }
+                    return Response(status=status.HTTP_200_OK,data=resposta)
+                else:
+                    return Response(status=status.HTTP_400_BAD_REQUEST,data="Erro no Login, refaça a operação")#formatação incorreta
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED,data="usuário ou senha incorreto") 
+            resposta = 'usuário: '+ request.data['username']
+            return Response(status=status.HTTP_401_UNAUTHORIZED,data='usuario ou senha incorreto') 
 
     def token_para_usuario(self,usuario):
         refresh = RefreshToken.for_user(usuario)
@@ -53,7 +57,7 @@ class LoginView(APIView):
         }
 
 class EmpresaAPIView(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsSuperUser,)
 
     def get(self,request):
         empresas = Empresa.objects.all()
@@ -69,7 +73,7 @@ class EmpresaAPIView(APIView):
                 usuarioAux = None
             if usuarioAux == None:
                 usuario = Usuario.objects.create(username=serializer.data['cnpj'],
-                password=make_password('112233'),
+                password=GeraSenhaUsuario.gera_senha(),
                 is_empresa=True,is_active=True)
                 empresa = Empresa.objects.create(usuario=usuario,nome=serializer.data['nome'],
                 cnpj=serializer.data['cnpj'],
@@ -82,14 +86,14 @@ class EmpresaAPIView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
           
 class UsuarioAPIView(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsSuperUser,)
 
     def get(self,request):
         usuarios = Usuario.objects.all()
         serializer = UsuarioSerializer(usuarios,many=True)
         return Response(data=serializer.data)
 
-############################################# final dos teste e começo das views
+#############################################
 
 class VeiculoListaAPIView(APIView):
     permission_classes = (AllowAny,)
@@ -202,6 +206,12 @@ class FuncionarioDetalheAPIView(APIView):
     
     def put(self,request,id):
         if(Funcionario.objects.filter(usuario=id).exists()):
+            funcionario = Funcionario.objects.get(usuario=id)
+            viagem = Viagem.objects.filter(funcionario=funcionario).filter(viagem_finalizada=False)
+            status = int(request.data['status'])
+            if(viagem.exists()):
+                if(status != funcionario.status and status == 1):
+                    return Response(status=sta)
             if(RegularizaFuncionario.regulariza_funcionario(RegularizaFuncionario,request.data['cpf'],request.data['nome'],request.data['celular'],request.data['data_aniversario'],request.data['data_admissao'])):
                 usuarios = Usuario.objects.filter(username=request.data['cpf'])
                 for usuario in usuarios:  
@@ -244,7 +254,6 @@ class RelatorioListaAPIView(APIView):
         aux_existe = False
         if(RegularizaRelatorio_Itens().regulariza_relatorio(relatorio,itens)):
             relatorio_salvo = Relatorio.objects.create(nome=relatorio['nome'])
-            #print(relatorio_salvo)
             for item in itens:
                 Item.objects.create(descricao=item['descricao'],relatorio=relatorio_salvo)
                 aux = str(item['descricao'])
@@ -318,3 +327,126 @@ class testeItemApiView(APIView):
             item[0].delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class RevisaoListaAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self,request,id_veiculo):
+        veiculo = Veiculo.objects.filter(id=id_veiculo)
+        if(veiculo.exists()):
+            veiculo = veiculo[0]
+            revisoes = Revisao.objects.filter(veiculo = veiculo)
+            if(revisoes.__len__() > 0):
+                serializer = RevisaoSerializer(revisoes, many=True)
+                return Response(status=status.HTTP_200_OK, data=serializer.data)
+            return Response(status=status.HTTP_400_BAD_REQUEST, data='este veículo não possuí revisões')
+        return Response(status=status.HTTP_400_BAD_REQUEST, data='veículo inexistente')
+
+    def post(self,request,id_veiculo):
+        veiculo = Veiculo.objects.filter(id=id_veiculo)
+        
+        if(veiculo.exists()):
+            veiculo = veiculo[0]
+            request.data['veiculo'] = veiculo.id
+            revisao = RevisaoSerializer(data=request.data)
+            if(revisao.is_valid()):
+                if(not(Revisao.objects.filter(veiculo=veiculo).exists())):
+                    revisao.save()
+                    return Response(status=status.HTTP_200_OK, data='revisão criada com sucesso')
+                if( revisao.validated_data['data'] > veiculo.data_registro):
+                    revisoes = Revisao.objects.filter(veiculo=veiculo).filter(data__gt=revisao.validated_data['data'])#data > 
+                    if(not(revisoes.exists())):
+                        revisao_aux = Revisao.objects.filter(veiculo=veiculo).latest('data')
+                        if(revisao_aux.kilometragem <= int(revisao.validated_data['kilometragem'])):
+                            if(int(revisao.validated_data['nota']) >= 0 and int(revisao.validated_data['nota'] <= 10)):
+                                revisao.save()
+                                return Response(status=status.HTTP_200_OK, data='revisão criada com sucesso')
+                return Response(status=status.HTTP_400_BAD_REQUEST, data='check os dados inseridos')
+            return Response(revisao.errors)
+
+class RevisaoDetalheAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self,request,id_revisao):
+        revisao = Revisao.objects.filter(id = id_revisao)
+        if(revisao.exists()):
+            revisao = revisao[0]
+            serializer = RevisaoSerializer(revisao)
+            return Response(status=status.HTTP_200_OK,data=serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST,data='revisão inexistente')
+
+class ViagemListaAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self,request):
+        serializer = ViagemSerializer(Viagem.objects.all(), many=True)
+        return Response(status=status.HTTP_200_OK,data=serializer.data)
+    
+    def post(self,request):
+        viagem_serializer = ViagemSerializer(data=request.data['viagem'])
+        if(viagem_serializer.is_valid()):
+            funcionario = Funcionario.objects.filter(usuario=viagem_serializer.validated_data['funcionario'])
+            veiculo = Veiculo.objects.filter(id=viagem_serializer.validated_data['veiculo'].id)
+            relatorio = Relatorio.objects.filter(id = request.data['relatorio'])
+            if(funcionario.exists() and veiculo.exists() and relatorio.exists()):
+                funcionario = funcionario[0]
+                veiculo = veiculo[0]
+                relatorio = relatorio[0]
+                # se igual a disponível
+                if(funcionario.status == 1 and veiculo.status == 1): 
+                    if(RegularizaViagem.regulariza_viagem(RegularizaViagem,viagem_serializer.validated_data['origem'],viagem_serializer.validated_data['destino'],viagem_serializer.validated_data['carga'],viagem_serializer.validated_data['periodizacao_relatorio'],viagem_serializer.validated_data['data_inicio'])):
+                        viagem = viagem_serializer.save()
+                        relatorio_viagem = Relatorios_Viagem.objects.create(viagem=viagem,relatorio=relatorio)
+                        funcionario.status = 3
+                        veiculo.status = 3
+                        funcionario.save()
+                        veiculo.save()
+                        return Response(data='viagem criada com sucesso!')
+                    else:
+                        return Response(status=status.HTTP_400_BAD_REQUEST, data='check os dados inseridos')
+                else:
+                    return Response(status=status.HTTP_400_BAD_REQUEST, data='veículo ou funcionário indisponível')
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST, data='veículo, funcionário ou relatório inexistente')
+        return Response(viagem_serializer.errors)
+
+class ViagemDetalheAPIView(APIView):
+    permission_classes = (AllowAny,)
+    
+    def get(self,request,id):
+        viagem = Viagem.objects.filter(id=id)
+        if(viagem.exists()):
+            viagem = viagem[0]
+            serializer = ViagemSerializer(viagem)
+            return Response(status=status.HTTP_200_OK,data=serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST, data='Viagem inexistente')
+    
+    def delete(self,request,id):
+        viagem = Viagem.objects.filter(id=id)
+        if(viagem.exists()):
+            relatorios_viagens = Relatorios_Viagem.objects.filter(viagem=viagem[0])
+            if(relatorios_viagens.__len__() == 1):
+                relatorios_viagens = relatorios_viagens[0]
+                funcionario = relatorios_viagens.viagem.funcionario
+                veiculo = relatorios_viagens.viagem.veiculo
+                viagem = relatorios_viagens.viagem
+                
+                funcionario.status = 1
+                funcionario.save()
+                
+                veiculo.status = 1
+                veiculo.save()
+                
+                viagem.delete()
+                relatorios_viagens.delete()
+
+                return Response(data='Viagem excluída com sucesso')
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST,data='Não foi possível excluir está viagem pois possui relatórios associados')
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST,data='Viagem inexistente')
+
+
+
+
+
