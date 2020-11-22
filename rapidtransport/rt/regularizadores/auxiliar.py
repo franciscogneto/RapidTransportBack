@@ -1,4 +1,4 @@
-from datetime import datetime,date
+from datetime import datetime,date,timedelta
 from random import randint
 
 
@@ -43,7 +43,6 @@ class RegularizadorVeiculo():
 
 class RegularizaFuncionario():
     def regulariza_funcionario(self,cpf: str,nome: str,celular: str,data_aniversario: datetime,data_admissao: datetime):
-        print("ENTROUUU")
         idade = RegularizaFuncionario.calcula_idade(self,data_aniversario)
         print(idade)
         admissao = RegularizaFuncionario.calcula_idade(self,data_admissao)
@@ -107,8 +106,6 @@ class RegularizaRelatorio_Itens():
         nome = str(relatorio['nome'])
         nome = nome.replace(' ','')
         print(nome)
-
-        
         #relatorio
         if(nome.__len__() == 0):
             return False
@@ -119,3 +116,20 @@ class RegularizaRelatorio_Itens():
             if(descricao.__len__() < 3):
                 return False
         return True
+
+class RegularizaViagem():
+
+    def regulariza_viagem(self,origem: str,destino: str,carga: str,periodizacao: int, data:datetime):
+        aux = origem.replace(' ','')
+        if(aux.__len__() > 1):
+            aux = destino.replace(' ','')
+            if(aux.__len__() > 1):
+                aux = carga.replace(' ','')
+                if(aux.__len__() > 1):
+                    if(periodizacao > 0):
+                        data_atual = date.today()
+                        data_aux = data_atual - timedelta(days=7)#data aux = data atual menos 7 dias
+                        if(data >= data_aux and data <= data_atual):
+                            return True
+
+        return False
