@@ -25,7 +25,7 @@ SECRET_KEY = 'kfle)+vq$u&3t305#*())&vke71q*0v9%z5wxc62&=ixtp7&-0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['testserver','localhost', '127.0.0.1', '[::1]',]
 
 
 # Application definition
@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     ##
     'corsheaders',
 ]
-
 
 
 MIDDLEWARE = [
@@ -163,7 +162,8 @@ CORS_ALLOW_METHODS = [
     'GET',
     'POST',
     'PUT',
-    'PATCH'
+    'PATCH',
+    'DELETE'
 ]
 
 #configurando jwt
