@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 # Create your models here.
 #Herda a classe model do django
 
@@ -39,7 +40,7 @@ class Veiculo(models.Model):
     kilometragem_revisao = models.PositiveIntegerField()
     empresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(choices=STATUS,default=1)
-    
+    data_registro = models.DateField(default=timezone.now)
     #Como será mostrado este model no admin por exemplo quando criado um novo objeto.
     def __str__(self):
         return self.placa
@@ -113,7 +114,7 @@ class Viagem(models.Model):
     empresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
     funcionario = models.ForeignKey(Funcionario,on_delete=models.CASCADE)
     veiculo = models.ForeignKey(Veiculo,on_delete=models.CASCADE)
-    
+
 
     class Meta:
         db_table = "viagem"
@@ -123,3 +124,22 @@ class Relatorios_Viagem(models.Model):
     viagem = models.ForeignKey(Viagem,on_delete=models.CASCADE)
     data_preenchimento = models.DateField(null=True)
     observacao = models.CharField(max_length=300,blank=True,null=True)
+    
+
+    class Meta:
+        db_table = "relatorio_viagem"
+
+class Revisao(models.Model):
+    id = models.AutoField(primary_key=True)
+    veiculo = models.ForeignKey(Veiculo,on_delete=models.CASCADE)
+    kilometragem = models.PositiveIntegerField()
+    data = models.DateField()
+    nota = models.PositiveSmallIntegerField(default=5)
+    observacao = models.TextField(blank=True)
+
+    def __str__(self):
+        retorno = self.veiculo.placa + ' | ' + self.data
+        return retorno
+
+    class Meta:
+        db_table = "revisao"
