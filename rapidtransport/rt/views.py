@@ -131,6 +131,11 @@ class VeiculoDetalheApiView(APIView):
     def put(self,request,id):
         if(Veiculo.objects.filter(id=id).exists()):
             veiculo = Veiculo.objects.get(id=id)
+            viagem = Viagem.objects.filter(veiculo=veiculo).filter(viagem_finalizada=False)
+            status = int(request.data['status'])
+            if(viagem.exists()):
+                if(status != veiculo.status and status == 1):
+                    return Response(status=400,data='Veiculo está em uma viagem, não pode coloca-lo como DISPONÍVEL')
             if(RegularizadorVeiculo.regulariza_veiculo(RegularizadorVeiculo,request.data['modelo'],request.data['color'],request.data['placa'])):
                 for objeto in Veiculo.objects.filter(placa=request.data['placa']):
                     if(objeto.id != id):
@@ -147,8 +152,11 @@ class VeiculoDetalheApiView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data="veículo não encontrado")
 
     def delete(self,request,id):
-        if(Veiculo.objects.filter(id=id).exists()):
+        if(Veiculo.objects.filter(id=id).exists()):          
             veiculo = Veiculo.objects.get(id=id)
+            viagens = Viagem.objects.filter(veiculo=veiculo)
+            if(viagens.exists()):
+                return Response(status=status.HTTP_400_BAD_REQUEST,data='Veículo presente em viagem(ns), sendo assim não é possívle excluí-lo')
             Veiculo.objects.filter(id=id).delete()
             mensagem = "excluído com sucesso veículo da placa "+veiculo.placa
             return Response(status=status.HTTP_204_NO_CONTENT , data=mensagem)
@@ -168,7 +176,6 @@ class FuncionarioListaAPIView(APIView):
     def post(self,request):
 
         if(not(Funcionario.objects.filter(cpf=request.data['cpf']).exists())):
-            print(request.data['cpf'])
             if(RegularizaFuncionario.regulariza_funcionario(RegularizaFuncionario,request.data['cpf'],request.data['nome'],request.data['celular'],request.data['data_aniversario'],request.data['data_admissao'])):
                 if(not(Empresa.objects.filter(usuario=request.data['empresa']).exists())):
                     return Response(status=status.HTTP_400_BAD_REQUEST, data="não foi possível criar o funcionários, check os dados")
@@ -211,7 +218,7 @@ class FuncionarioDetalheAPIView(APIView):
             status = int(request.data['status'])
             if(viagem.exists()):
                 if(status != funcionario.status and status == 1):
-                    return Response(status=sta)
+                    return Response(status=400,data='Funcionário está em uma viagem, não pode coloca-lo como DISPONÍVEL')
             if(RegularizaFuncionario.regulariza_funcionario(RegularizaFuncionario,request.data['cpf'],request.data['nome'],request.data['celular'],request.data['data_aniversario'],request.data['data_admissao'])):
                 usuarios = Usuario.objects.filter(username=request.data['cpf'])
                 for usuario in usuarios:  
@@ -231,6 +238,9 @@ class FuncionarioDetalheAPIView(APIView):
         if(Funcionario.objects.filter(usuario=id).exists()):
             usuario = Usuario.objects.get(id=id)
             funcionario = Funcionario.objects.get(usuario=usuario)
+            viagens = Viagem.objects.filter(funcionario=funcionario)
+            if(viagens.exists()):
+                return Response(status=status.HTTP_400_BAD_REQUEST,data='Funcionário presente em viagem(ns), sendo assim não é possívle excluí-lo')
             mensagem = "excluído com sucesso funcionário: nome:"+funcionario.nome+" cpf: "+funcionario.cpf
             funcionario.delete()
             usuario.delete()
@@ -248,9 +258,7 @@ class RelatorioListaAPIView(APIView):
     
     def post(self,request):
         relatorio = request.data['relatorio']  
-        print(relatorio)      
         itens = request.data['itens']
-        print(itens)
         aux_existe = False
         if(RegularizaRelatorio_Itens().regulariza_relatorio(relatorio,itens)):
             relatorio_salvo = Relatorio.objects.create(nome=relatorio['nome'])
@@ -283,9 +291,11 @@ class RelatorioDetalheAPIView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST,data='relatório inexistente')
 
     def delete(self,request,id):
-        #conferir se tem alguma viagem com este relatório
         relatorio = Relatorio.objects.filter(id=id)
         if(relatorio.exists()):
+            viagens_relatorio = Relatorios_Viagem.objects.filter(relatorio=relatorio[0])
+            if(viagens_relatorio.exists()):
+                return Response(status=status.HTTP_400_BAD_REQUEST,data='relatório associado a uma viagem, não é possível exluir')
             for item in Item.objects.filter(relatorio=relatorio[0]):
                 item.delete()
             nome_relatorio = relatorio[0].nome
@@ -295,7 +305,7 @@ class RelatorioDetalheAPIView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST,data='relatório inexistente')
 
 
-class ItemAPIView(APIView):
+'''class ItemAPIView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self,request):
@@ -326,7 +336,7 @@ class testeItemApiView(APIView):
         if(item.exists()):
             item[0].delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)'''
 
 class RevisaoListaAPIView(APIView):
     permission_classes = (AllowAny,)
@@ -445,8 +455,3 @@ class ViagemDetalheAPIView(APIView):
                 return Response(status=status.HTTP_400_BAD_REQUEST,data='Não foi possível excluir está viagem pois possui relatórios associados')
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST,data='Viagem inexistente')
-
-
-
-
-
