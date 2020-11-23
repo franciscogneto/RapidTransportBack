@@ -85,16 +85,28 @@ WSGI_APPLICATION = 'rapidtransport.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {#local
+'''DATABASES = {#configuração local
     'default': {
         'ENGINE' : 'django.db.backends.postgresql',
-        'NAME' : 'rapidtransport',
-        'USER' : 'postgres',
-        'PASSWORD' : '180141',
+        'NAME' : 'nome_database',
+        'USER' : 'nome_usuário',
+        'PASSWORD' : 'senha',
         'HOST' : '127.0.0.1',
         'PORT' : '5432'
     }
+}'''
+
+DATABASES = {#configuração remoto
+    'default': {
+        'ENGINE' : 'django.db.backends.postgresql',
+        'NAME' : 'kbzgynxl',
+        'USER' : 'kbzgynxl',
+        'PASSWORD' : 'A590Lc30kJqKslTfCt6wb6i5if3wr8C0',
+        'HOST' : 'tuffi.db.elephantsql.com',
+        'PORT' : '5432'
+    }
 }
+
 
 
 # Password validation
