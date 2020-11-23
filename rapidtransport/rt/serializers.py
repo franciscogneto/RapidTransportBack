@@ -15,6 +15,7 @@ class EmpresaSerializer(serializers.ModelSerializer):
         }"""
         model = Empresa #model que estou utilziando
         fields = ( #seus campos
+            'usuario',
             'nome',
             'cnpj',
             'endereco',
