@@ -36,6 +36,8 @@ Segurança - JWT:
 ->pegar token e refresh - ok api/token/
 ->refresh - ok api/token/refresh/
 
+Testes - aplicado.
+
 Modelos - Usuário:
 -> criação de um usuário para logar no sistema - ok
 -> múltiplos papeis - ok funcionário/empresa
@@ -61,8 +63,22 @@ relatório:
 item:
 -> apagar item -> ok -> DELETE api/item/{id}/ -- por enquanto é esse caminho
 
+revisão:
+-> pegar revisões de um veículo -> ok -> GET api/revisoes/{id_veiculo}
+-> inserir uma revisão de um veículo -> ok -> POST api/revisoes/{id_veiculo}
+-> pegar uma revisão em específico de um veículo -> ok -> GET api/revisao/{id_revisao}
 
-teste -> empresa
+viagem:
+-> listar todas as viagens -> ok -> GET api/viagens/
+-> criar uma viagem -> -> POST api/viagens/ -- cria relatorio_viagem com os campos [observacao, data_preenchimento com null]
+-> excluir uma viagens -> ok -> DELETE api/viagens/{id}
+
+
+o que faltou:
+-> começar e finalizar a parte do motorista (preencher relatórios, alterar senha, encerrar viagem)
+-> avisos tanto para empresa quanto funcionário
+-> opção para mudar senha de uma empresa
+
 {
 "cnpj":"6542476000137",
 "nome":"EmpresaTeste10",
@@ -106,3 +122,35 @@ teste -> empresa
 ]
 
 }
+
+{
+}
+
+{
+    "kilometragem":1000,
+    "data":"2020-11-17",
+    "nota":8,
+    "observacao":"pastinhas desgastadas"
+}
+
+{
+    "viagem":{
+        "origem": "Minas Gerais",
+        "destino": "São Paulo",
+        "carga": "alimentos",
+        "data_inicio": "2020-11-18",
+        "periodizacao_relatorio": 7,
+        "funcionario":3,
+        "veiculo":1,
+        "empresa":2
+    },
+    "relatorio":6
+}
+
+datetime(day=(data_atual.day - timedelta(days=7)),month=data_atual.month,year=data_atual.year)
+
+http post http://localhost:8000/api/token/ username=admin password=Zz_180141
+
+http get http://localhost:8000/api/veiculos/ "Authorization: Bearer token"
+
+http post http://localhost:8000/api/token/refresh/ refresh=token
