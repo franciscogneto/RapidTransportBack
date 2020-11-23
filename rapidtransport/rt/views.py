@@ -12,7 +12,6 @@ from .permissions.permissions import IsEmpresaUser,IsFuncionarioUser,IsSuperUser
 from .regularizadores.auxiliar import GeraSenhaUsuario,RegularizadorVeiculo
 from .regularizadores.auxiliar import RegularizaFuncionario,RegularizaRelatorio_Itens,RegularizaViagem
 from django.shortcuts import redirect
-from rest_framework_simplejwt.tokens import RefreshToken 
 from datetime import datetime
 
 class LoginView(APIView):
@@ -44,9 +43,11 @@ class LoginView(APIView):
                     return Response(status=status.HTTP_200_OK,data=resposta)
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST,data="Erro no Login, refaça a operação")#formatação incorreta
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED,data='senha incorreta')
         else:
-            resposta = 'usuário: '+ request.data['username']
-            return Response(status=status.HTTP_401_UNAUTHORIZED,data='usuario ou senha incorreto') 
+            return Response(status=status.HTTP_401_UNAUTHORIZED,data='usuario e senha incorreto') 
+
 
     def token_para_usuario(self,usuario):
         refresh = RefreshToken.for_user(usuario)
@@ -57,7 +58,9 @@ class LoginView(APIView):
         }
 
 class EmpresaAPIView(APIView):
-    permission_classes = (IsSuperUser,)
+    #permission_classes = (IsSuperUser,)
+    permission_classes = (AllowAny,)
+    
 
     def get(self,request):
         empresas = Empresa.objects.all()
@@ -86,7 +89,8 @@ class EmpresaAPIView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
           
 class UsuarioAPIView(APIView):
-    permission_classes = (IsSuperUser,)
+    #permission_classes = (IsSuperUser,)
+    permission_classes = (AllowAny,)
 
     def get(self,request):
         usuarios = Usuario.objects.all()
@@ -96,6 +100,7 @@ class UsuarioAPIView(APIView):
 #############################################
 
 class VeiculoListaAPIView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
 
     def get(self,request):
@@ -118,6 +123,7 @@ class VeiculoListaAPIView(APIView):
 
 
 class VeiculoDetalheApiView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
 
     def get(self,request,id):
@@ -164,7 +170,7 @@ class VeiculoDetalheApiView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND, data="veículo não encontrado")
 
 class FuncionarioListaAPIView(APIView):
-
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
 
 
@@ -202,8 +208,9 @@ class FuncionarioListaAPIView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST,data="cpf já existente")
 
 class FuncionarioDetalheAPIView(APIView):
-
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
+
     def get(self,request,id):
         if(Funcionario.objects.filter(usuario=id)):
             funcionario = Funcionario.objects.get(usuario=id)
@@ -250,6 +257,7 @@ class FuncionarioDetalheAPIView(APIView):
 
 
 class RelatorioListaAPIView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
     
     def get(self,request):
@@ -276,6 +284,7 @@ class RelatorioListaAPIView(APIView):
 
 
 class RelatorioDetalheAPIView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
 
     def get(self,request,id):
@@ -306,6 +315,7 @@ class RelatorioDetalheAPIView(APIView):
 
 
 '''class ItemAPIView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
 
     def get(self,request):
@@ -321,6 +331,7 @@ class RelatorioDetalheAPIView(APIView):
 
 
 class testeItemApiView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
 
     def get(self,request,id_item):
@@ -339,6 +350,7 @@ class testeItemApiView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)'''
 
 class RevisaoListaAPIView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
 
     def get(self,request,id_veiculo):
@@ -375,6 +387,7 @@ class RevisaoListaAPIView(APIView):
             return Response(revisao.errors)
 
 class RevisaoDetalheAPIView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
 
     def get(self,request,id_revisao):
@@ -386,6 +399,7 @@ class RevisaoDetalheAPIView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST,data='revisão inexistente')
 
 class ViagemListaAPIView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
 
     def get(self,request):
@@ -421,6 +435,7 @@ class ViagemListaAPIView(APIView):
         return Response(viagem_serializer.errors)
 
 class ViagemDetalheAPIView(APIView):
+    #permission_classes = (IsEmpresaUser,)
     permission_classes = (AllowAny,)
     
     def get(self,request,id):
