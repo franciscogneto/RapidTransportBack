@@ -75,14 +75,19 @@ class EmpresaAPIView(APIView):
             except Usuario.DoesNotExist:
                 usuarioAux = None
             if usuarioAux == None:
+                senha = GeraSenhaUsuario.gera_senha(GeraSenhaUsuario)
                 usuario = Usuario.objects.create(username=serializer.data['cnpj'],
-                password=GeraSenhaUsuario.gera_senha(),
+                password= make_password(senha),
                 is_empresa=True,is_active=True)
                 empresa = Empresa.objects.create(usuario=usuario,nome=serializer.data['nome'],
                 cnpj=serializer.data['cnpj'],
                 endereco=serializer.data['endereco'],
                 telefone=serializer.data['telefone'])
-                return Response(status=status.HTTP_200_OK, data=EmpresaSerializer(empresa,many=False).data)           
+                resposta = {
+                    'usuario':empresa.cnpj,
+                    'senha':senha
+                }
+                return Response(status=status.HTTP_200_OK, data=resposta)           
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST,data="cadastro existente")        
         else:
@@ -186,6 +191,9 @@ class FuncionarioListaAPIView(APIView):
                 if(not(Empresa.objects.filter(usuario=request.data['empresa']).exists())):
                     return Response(status=status.HTTP_400_BAD_REQUEST, data="não foi possível criar o funcionários, check os dados")
                 empresa_aux = Empresa.objects.get(usuario=request.data['empresa'])
+                funcionario_aux = Funcionario.objects.filter(cpf=request.data['cpf'])
+                if(funcionario_aux.exists()):
+                    return Response(status=status.HTTP_400_BAD_REQUEST, data='cpf existente')
                 senha = GeraSenhaUsuario.gera_senha(GeraSenhaUsuario)
                 usuario = Usuario.objects.create(username=request.data['cpf'],password=make_password(senha))
                 funcionario  = Funcionario.objects.create(usuario=usuario,
