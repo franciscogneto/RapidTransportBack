@@ -195,7 +195,7 @@ class FuncionarioListaAPIView(APIView):
                 if(funcionario_aux.exists()):
                     return Response(status=status.HTTP_400_BAD_REQUEST, data='cpf existente')
                 senha = GeraSenhaUsuario.gera_senha(GeraSenhaUsuario)
-                usuario = Usuario.objects.create(username=request.data['cpf'],password=make_password(senha))
+                usuario = Usuario.objects.create(username=request.data['cpf'],password=make_password(senha),is_funcionario=True)
                 funcionario  = Funcionario.objects.create(usuario=usuario,
                 nome=request.data['nome'],
                 data_admissao=request.data['data_admissao'],
@@ -380,17 +380,19 @@ class RevisaoListaAPIView(APIView):
             request.data['veiculo'] = veiculo.id
             revisao = RevisaoSerializer(data=request.data)
             if(revisao.is_valid()):
-                if(not(Revisao.objects.filter(veiculo=veiculo).exists())):
-                    revisao.save()
-                    return Response(status=status.HTTP_200_OK, data='revisão criada com sucesso')
-                if( revisao.validated_data['data'] > veiculo.data_registro):
-                    revisoes = Revisao.objects.filter(veiculo=veiculo).filter(data__gt=revisao.validated_data['data'])#data > 
-                    if(not(revisoes.exists())):
-                        revisao_aux = Revisao.objects.filter(veiculo=veiculo).latest('data')
-                        if(revisao_aux.kilometragem <= int(revisao.validated_data['kilometragem'])):
-                            if(int(revisao.validated_data['nota']) >= 0 and int(revisao.validated_data['nota'] <= 10)):
-                                revisao.save()
-                                return Response(status=status.HTTP_200_OK, data='revisão criada com sucesso')
+                if(veiculo.kilometragem_inicial < int(revisao.validated_data['kilometragem'])):
+                    if(not(Revisao.objects.filter(veiculo=veiculo).exists())):
+                        
+                        revisao.save()
+                        return Response(status=status.HTTP_200_OK, data='revisão criada com sucesso')
+                    if( revisao.validated_data['data'] > veiculo.data_registro):
+                        revisoes = Revisao.objects.filter(veiculo=veiculo).filter(data__gt=revisao.validated_data['data'])#data > 
+                        if(not(revisoes.exists())):
+                            revisao_aux = Revisao.objects.filter(veiculo=veiculo).latest('data')
+                            if(revisao_aux.kilometragem <= int(revisao.validated_data['kilometragem'])):
+                                if(int(revisao.validated_data['nota']) >= 0 and int(revisao.validated_data['nota'] <= 10)):
+                                    revisao.save()
+                                    return Response(status=status.HTTP_200_OK, data='revisão criada com sucesso')
                 return Response(status=status.HTTP_400_BAD_REQUEST, data='check os dados inseridos')
             return Response(revisao.errors)
 
