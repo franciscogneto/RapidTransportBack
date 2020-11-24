@@ -79,15 +79,38 @@ o que faltou:
 -> avisos tanto para empresa quanto funcionário
 -> opção para mudar senha de uma empresa
 
+
+################## Json's #################
+veículo:
+
 {
-"cnpj":"6542476000137",
-"nome":"EmpresaTeste10",
-"endereco":"Rua Augusta, 167",
-"telefone":"15-6413244"
+"modelo":"",
+"color":"",
+"placa":"",
+"kilometragem_inicial":,
+"kilometragem_revisao":,
+"empresa": 4
+}
+
+------------------------------------------------------------------------
+empresa:
+
+{
+"cnpj":"6584133000157",
+"nome":"ELI Transportes",
+"endereco":"Rua Cabral, 167, São Paulo",
+"telefone":"15-32781245"
 }
 
 {
-"empresa": 2,
+    "usuario": "6584133000157",
+    "senha": "fecnmsyvag2495"
+}
+ --------------------------------------------------------------------
+funcionário:
+
+{
+"empresa": 4,
 "nome": "Marcio Veloso",
 "data_admissao": "2020-10-10",
 "data_aniversario": "2000-10-10",
@@ -101,10 +124,28 @@ o que faltou:
     "senha": "vqrjtfyitw8905"
 }
 
+    {
+        "usuario": 5,
+        "empresa": 4,
+        "nome": "Bruno Pena",
+        "data_admissao": "2019-10-10",
+        "data_aniversario": "1980-02-10",
+        "tipo_carteira": "E",
+        "celular": "15-45123654",
+        "cpf": "46512398152",
+        "status": 1
+    }
+{
+    "usuario": "46512398152",
+    "senha": "oixeaskiaf8519"
+}
+----------------------------------------------------------------------------
+relatório:
+
 {
 
 "relatorio": {
-	"nome":"ozana"
+	"nome":"Viagem Curta"
 },
 "itens":[
     {
@@ -124,7 +165,32 @@ o que faltou:
 }
 
 {
+
+"relatorio": {
+	"nome":"Viagem Curta"
+},
+"itens":[
+    {
+        "grau_emergencia":1,
+        "descricao":"verificar óleo"
+    },
+    {
+        "grau_emergencia":3,
+        "descricao":"verificar pneu"
+    },
+    {
+        "grau_emergencia":2,
+        "descricao":"verificar luzes"
+    }
+]
+
 }
+------------------------------------------
+
+
+
+
+revisöes:
 
 {
     "kilometragem":1000,
@@ -134,23 +200,36 @@ o que faltou:
 }
 
 {
-    "viagem":{
+    "kilometragem":200000,
+    "data":"2020-11-25",
+    "nota":9,
+    "observacao":""
+}
+
+{
+    "kilometragem":550000,
+    "data":"2020-11-25",
+    "nota":6,
+    "observacao":"Fluidos do freio estão velhos"
+}
+
+------------------------------------------
+
+viagens:
+
+{
+    {
+        "id": 1,
         "origem": "Minas Gerais",
         "destino": "São Paulo",
         "carga": "alimentos",
-        "data_inicio": "2020-11-18",
+        "viagem_finalizada": false,
+        "data_inicio": "2020-11-22",
         "periodizacao_relatorio": 7,
-        "funcionario":3,
-        "veiculo":1,
-        "empresa":2
+        "empresa": 4,
+        "funcionario": 6,
+        "veiculo": 3
     },
-    "relatorio":6
+    "relatorio":2
 }
 
-datetime(day=(data_atual.day - timedelta(days=7)),month=data_atual.month,year=data_atual.year)
-
-http post http://localhost:8000/api/token/ username=admin password=Zz_180141
-
-http get http://localhost:8000/api/veiculos/ "Authorization: Bearer token"
-
-http post http://localhost:8000/api/token/refresh/ refresh=token
