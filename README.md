@@ -22,7 +22,7 @@ nome\Scripts\activate
 ```
 pip install -r requirements.txt
 ```
-#### Vá para a o diretório rapidtransport
+#### -> Vá para a o diretório rapidtransport
 #### Rodando o servidor:
 ```
 python manage.py runserver
@@ -31,10 +31,11 @@ python manage.py runserver
 #### acesse o seguinte link para abrir o projeto: 
 
 [localhost](http:127.0.0.1:8000)
-###### Aperte CLTR+C no prompt caso queira incessar o servidor
+###### Aperte CLTR+C no prompt caso queira encerrar o servidor
 
 
 ##### -> desativando a venv:
+######(no diretório onde se encontra a venv)
 ```
 \nome\Scripts\deactivate
 ```
