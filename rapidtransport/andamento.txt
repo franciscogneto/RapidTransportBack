@@ -1,23 +1,17 @@
 Fuso horário:
--> condifuração do fuso horário - ok - SP
+-> confifuração do fuso horário - ok - SP
 
 Idioma - pr-br:
 -> confifuração do idioma padrão - ok
 
 Banco de dados - PostGres:
 -> configuração no back - ok
--> local - ok
+-> remoto - ok
 
-Modelos:
-->Empresa - ok
-->Veiculo - ok
-->Funcionario - ok
+Modelos - ok:
 
-Serializers:
-->Empresa - ok
-->Usuário - ok
-->Veiculo - ok
-->funcionario - ok
+
+Serializers - ok:
 
 Desacoplamento - ok
 -> /api/...
@@ -32,11 +26,11 @@ GIT:
 
 Segurança - JWT:
 ->configuração inicial do jwt - ok 
-->configuração profunda do jwt -  x
-->pegar token e refresh - ok api/token/
-->refresh - ok api/token/refresh/
+->configuração profunda do jwt -  ok
 
-Testes - aplicado.
+
+Testes - ok.
+
 
 Modelos - Usuário:
 -> criação de um usuário para logar no sistema - ok
@@ -55,13 +49,10 @@ Funcionário:
 ->deletar um funcionário - ok DELETE api/funcionarios/{id}
 
 relatório:
-->pegar relatórios -> GET api/relatorios/
+->pegar relatórios -> ok - GET api/relatorios/
 ->criar relatório -> criar item - ok POST api/relatorios/
 ->pegar relatório específico -> ok GET api/relatorios/{id}/
-->apagar relatório - DELETE api/relatorios/{id}/
-
-item:
--> apagar item -> ok -> DELETE api/item/{id}/ -- por enquanto é esse caminho
+->apagar relatório - ok DELETE api/relatorios/{id}/
 
 revisão:
 -> pegar revisões de um veículo -> ok -> GET api/revisoes/{id_veiculo}
@@ -70,7 +61,7 @@ revisão:
 
 viagem:
 -> listar todas as viagens -> ok -> GET api/viagens/
--> criar uma viagem -> -> POST api/viagens/ -- cria relatorio_viagem com os campos [observacao, data_preenchimento com null]
+-> criar uma viagem -> ok -> POST api/viagens/ -- cria relatorio_viagem com os campos [observacao, data_preenchimento com null]
 -> excluir uma viagens -> ok -> DELETE api/viagens/{id}
 
 
