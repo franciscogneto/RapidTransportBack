@@ -19,7 +19,7 @@ urlpatterns = [
     #path('itens/',ItemAPIView.as_view(),name = 'itens'),
     #path('item/<int:id_item>/',testeItemApiView.as_view(),name = 'exclui_item'),
     path('revisoes/<int:id_veiculo>/', RevisaoListaAPIView.as_view(), name = 'revisoes'),
-    path('revisoes/<int:id_revisao>/',RevisaoDetalheAPIView.as_view(),name = 'revisao'),
+    path('revisao/<int:id_revisao>/',RevisaoDetalheAPIView.as_view(),name = 'revisao'),
     path('viagens/',ViagemListaAPIView.as_view(), name = 'viagens'),
     path('viagens/<int:id>/', ViagemDetalheAPIView.as_view(), name = 'viagem'),
     #### Admin
