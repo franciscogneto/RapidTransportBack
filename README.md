@@ -35,7 +35,7 @@ python manage.py runserver
 
 
 ##### -> desativando a venv:
-######(no diretório onde se encontra a venv)
+###### (no diretório onde se encontra a venv)
 ```
 \nome\Scripts\deactivate
 ```
