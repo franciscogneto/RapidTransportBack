@@ -23,13 +23,6 @@ nome\Scripts\activate
 pip install -r requirements.txt
 ```
 
-#### Aplicando as migrations necessárias:(REVISAR)
-##### -> acesse o diretório "rapidtransport" e execute o seguinte comando:
-
-```
-python manage.py migrate
-```
-
 #### Rodando o servidor:
 
 ```
