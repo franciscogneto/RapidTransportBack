@@ -22,7 +22,7 @@ nome\Scripts\activate
 ```
 pip install -r requirements.txt
 ```
-### Vá para a o diretório rapidtransport
+#### Vá para a o diretório rapidtransport
 #### Rodando o servidor:
 ```
 python manage.py runserver
