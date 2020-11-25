@@ -23,7 +23,7 @@ nome\Scripts\activate
 pip install -r requirements.txt
 ```
 
-#### Aplicando as migrations necessárias:
+#### Aplicando as migrations necessárias:(REVISAR)
 ##### -> acesse o diretório "rapidtransport" e execute o seguinte comando:
 
 ```
