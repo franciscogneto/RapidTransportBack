@@ -1,3 +1,5 @@
+### Por favor ler o arquivo 'andamento.txt'
+
 # Rodando o projeto
 #### primeiro no prompt insira o seguinte comando:
 
