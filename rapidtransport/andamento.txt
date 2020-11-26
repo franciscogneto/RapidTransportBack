@@ -209,17 +209,15 @@ revisöes:
 viagens:
 
 {
-    {
-        "id": 1,
+   "viagem": {
         "origem": "Minas Gerais",
         "destino": "São Paulo",
         "carga": "alimentos",
-        "viagem_finalizada": false,
-        "data_inicio": "2020-11-22",
+        "data_inicio": "2020-11-25",
         "periodizacao_relatorio": 7,
         "empresa": 4,
-        "funcionario": 6,
-        "veiculo": 3
+        "funcionario": 5,
+        "veiculo": 2
     },
     "relatorio":2
 }
