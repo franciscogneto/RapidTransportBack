@@ -99,7 +99,7 @@ empresa:
 }
  --------------------------------------------------------------------
 funcionário:
-
+------ json para cadastro ----
 {
 "empresa": 4,
 "nome": "Marcio Veloso",
@@ -110,13 +110,14 @@ funcionário:
 "cpf":"46512346465"
 }
 
+---- json retornado -----
+
 {
     "usuario": "46512346465",
     "senha": "vqrjtfyitw8905"
 }
-
+------ json para cadastro ----
     {
-        "usuario": 5,
         "empresa": 4,
         "nome": "Bruno Pena",
         "data_admissao": "2019-10-10",
@@ -124,15 +125,15 @@ funcionário:
         "tipo_carteira": "E",
         "celular": "15-45123654",
         "cpf": "46512398152",
-        "status": 1
     }
+---- json retornado -----
 {
     "usuario": "46512398152",
     "senha": "oixeaskiaf8519"
 }
 ----------------------------------------------------------------------------
 relatório:
-
+------ json para cadastro ----
 {
 
 "relatorio": {
@@ -154,7 +155,7 @@ relatório:
 ]
 
 }
-
+------ json para cadastro ----
 {
 
 "relatorio": {
@@ -182,21 +183,21 @@ relatório:
 
 
 revisöes:
-
+------ json para cadastro ----
 {
     "kilometragem":1000,
     "data":"2020-11-17",
     "nota":8,
     "observacao":"pastinhas desgastadas"
 }
-
+------ json para cadastro ----
 {
     "kilometragem":200000,
     "data":"2020-11-25",
     "nota":9,
     "observacao":""
 }
-
+------ json para cadastro ----
 {
     "kilometragem":550000,
     "data":"2020-11-25",
@@ -207,7 +208,7 @@ revisöes:
 ------------------------------------------
 
 viagens:
-
+------ json para cadastro ----
 {
    "viagem": {
         "origem": "Minas Gerais",
